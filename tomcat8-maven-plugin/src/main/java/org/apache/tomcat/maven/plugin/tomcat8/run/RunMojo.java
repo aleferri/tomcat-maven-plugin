@@ -465,6 +465,7 @@ public class RunMojo
                             if ( idx >= 0 )
                             {
                                 String filePath = StringUtils.removeStart( url.getFile().substring( 0, idx ), "file:" );
+                                filePath = java.net.URLDecoder.decode(filePath, "UTF-8");
 
                                 jarFile = new JarFile( filePath );
 
