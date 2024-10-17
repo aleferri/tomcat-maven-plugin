@@ -19,16 +19,6 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<<<<<<<< HEAD:tomcat8-maven-plugin/pom.xml
-========
-  <parent>
-    <groupId>org.apache.tomcat.maven</groupId>
-    <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-
->>>>>>>> 137a4be76f154200812b261d0081d1a6b129b0a1:tomcat6-maven-plugin/pom.xml
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
