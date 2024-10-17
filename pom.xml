@@ -45,7 +45,9 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
 
+
     <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
+    
     <!-- Test settings -->
     <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
     <surefire.version>2.22.1</surefire.version>
@@ -55,7 +57,6 @@
     <it.sleep.time>2000</it.sleep.time>
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
-    <maven.resources.escapeString>\</maven.resources.escapeString>
     <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
 
     <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
@@ -75,7 +76,7 @@
     <its.server.port>2008</its.server.port>
     <tomcat7Version>7.0.109</tomcat7Version>
     <tomcat8Version>8.5.100</tomcat8Version>
-
+    <tomcat9Version>9.0.96</tomcat9Version>
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
 
@@ -327,6 +328,8 @@
     <module>tomcat7-maven-plugin</module>
     <module>tomcat8-war-runner</module>
     <module>tomcat8-maven-plugin</module>
+    <module>tomcat9-war-runner</module>
+    <module>tomcat9-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
   </modules>
 
@@ -581,7 +584,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.16</version>
+        <version>3.3.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
@@ -602,7 +605,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.2</version>
+        <version>2.6</version>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -617,7 +620,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.4.1</version>
+        <version>1.26.2</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -681,7 +684,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
           <configuration>
             <encoding>${project.build.sourceEncoding}</encoding>
             <source>${maven.compiler.source}</source>
@@ -750,7 +753,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.3.1</version>
+          <configuration>
+            <escapeString>\</escapeString>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -777,6 +783,7 @@
               <exclude>DEPENDENCIES</exclude>
               <exclude>README.txt</exclude>
               <exclude>*.sh</exclude>
+              <exclude>*.log</exclude>
               <exclude>.git/**</exclude>
               <exclude>.idea/**</exclude>
               <exclude>out/**</exclude>

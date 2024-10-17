@@ -1,4 +1,4 @@
-package org.apache.tomcat.maven.plugin.tomcat8.run;
+package org.apache.tomcat.maven.plugin.tomcat9.run;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,72 +18,6 @@ package org.apache.tomcat.maven.plugin.tomcat8.run;
  * under the License.
  */
 
-import org.apache.catalina.Context;
-import org.apache.catalina.Host;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.WebResource;
-import org.apache.catalina.WebResourceSet;
-import org.apache.catalina.Wrapper;
-import org.apache.catalina.connector.Connector;
-import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.loader.WebappLoader;
-import org.apache.catalina.realm.MemoryRealm;
-import org.apache.catalina.servlets.DefaultServlet;
-import org.apache.catalina.startup.Catalina;
-import org.apache.catalina.startup.CatalinaProperties;
-import org.apache.catalina.startup.Tomcat;
-import org.apache.catalina.valves.AccessLogValve;
-import org.apache.catalina.webresources.FileResource;
-import org.apache.catalina.webresources.StandardRoot;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.filtering.MavenFileFilter;
-import org.apache.maven.shared.filtering.MavenFileFilterRequest;
-import org.apache.maven.shared.filtering.MavenFilteringException;
-import org.apache.tomcat.JarScanner;
-import org.apache.tomcat.maven.common.config.AbstractWebapp;
-import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
-import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
-import org.apache.tomcat.maven.plugin.tomcat8.AbstractTomcat8Mojo;
-import org.apache.tomcat.util.scan.StandardJarScanner;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
-import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.FileUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-
-import javax.servlet.ServletException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -100,12 +34,75 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.ServletException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.Host;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Wrapper;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.realm.MemoryRealm;
+import org.apache.catalina.servlets.DefaultServlet;
+import org.apache.catalina.startup.Catalina;
+import org.apache.catalina.startup.CatalinaProperties;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.valves.AccessLogValve;
+import org.apache.catalina.webresources.StandardRoot;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+import org.apache.maven.shared.filtering.MavenFilteringException;
+import org.apache.tomcat.JarScanner;
+import org.apache.tomcat.maven.common.config.AbstractWebapp;
+import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
+import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
+import org.apache.tomcat.maven.plugin.tomcat9.AbstractTomcat9Mojo;
+import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
+import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
 /**
  * @author Olivier Lamy
  * @since 2.0
  */
 public abstract class AbstractRunMojo
-    extends AbstractTomcat8Mojo
+    extends AbstractTomcat9Mojo
 {
     // ---------------------------------------------------------------------
     // Mojo Components
@@ -277,7 +274,7 @@ public abstract class AbstractRunMojo
      *
      * @since 1.0
      */
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Component
     protected MavenProject project;
 
     /**
@@ -343,8 +340,8 @@ public abstract class AbstractRunMojo
      * Tomcat. Instead please configure naming in the <code>server.xml</code>.
      * </p>
      *
-     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
-     * @see <a href="http://tomcat.apache.org/tomcat-8.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/startup/Embedded.html">org.apache.catalina.startup.Embedded</a>
+     * @see <a href="http://tomcat.apache.org/tomcat-7.0-doc/api/org/apache/catalina/startup/Tomcat.html">org.apache.catalina.startup.Tomcat</a>
      * @since 2.0
      */
     @Parameter( property = "maven.tomcat.useNaming", defaultValue = "true" )
@@ -635,6 +632,7 @@ public abstract class AbstractRunMojo
      *
      * @return the webapp context path
      */
+    @Override
     protected String getPath()
     {
         return path;
@@ -668,10 +666,12 @@ public abstract class AbstractRunMojo
 
         if ( overriddenContextFile != null && overriddenContextFile.exists() )
         {
+            getLog().info("Using dynamic context configuration file: " + overriddenContextFile.getAbsolutePath());
             standardContext = parseContextFile( overriddenContextFile );
         }
         else if ( defaultContextFile.exists() )
         {
+            getLog().info("Using default context configuration file: " + defaultContextFile.getAbsolutePath());
             standardContext = parseContextFile( defaultContextFile );
         }
 
@@ -693,10 +693,8 @@ public abstract class AbstractRunMojo
 
         Context context = container.addWebapp( contextPath, baseDir );
 
-        context.setResources(
-            new MyDirContext( new File( project.getBuild().getOutputDirectory() ).getAbsolutePath(), //
-                              getPath(), //
-                              getLog() ) );
+        StandardRoot root = new StandardRoot(context);
+        context.setResources(root);
 
         if ( useSeparateTomcatClassLoader )
         {
@@ -784,86 +782,6 @@ public abstract class AbstractRunMojo
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-    }
-
-
-    protected static class MyDirContext
-        extends StandardRoot
-    {
-        String buildOutputDirectory;
-
-        String webAppPath;
-
-        WebResourceSet webResourceSet;
-
-        Log log;
-
-        MyDirContext( String buildOutputDirectory, String webAppPath, Log log )
-        {
-
-            this.buildOutputDirectory = buildOutputDirectory;
-            this.webAppPath = webAppPath;
-            this.log = log;
-        }
-
-        @Override
-        public WebResource getResource( String path )
-        {
-
-            log.debug( "MyDirContext#getResource: " + path );
-            if ( "/WEB-INF/classes".equals( path ) )
-            {
-				return new FileResource( this, this.webAppPath, new File( this.buildOutputDirectory ), true, null );
-            }
-
-            File file = new File( path );
-            if ( file.exists() )
-            {
-				return new FileResource( this, this.webAppPath, file, true, null );
-            }
-            WebResource webResource = super.getResource( path );
-            return webResource;
-        }
-
-
-        @Override
-        public WebResource getClassLoaderResource( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResource: " + path );
-            // here get resources from various paths
-            return super.getClassLoaderResource( path );
-        }
-
-
-        @Override
-        public WebResource[] listResources( String path )
-        {
-            log.debug( "MyDirContext#listResources: " + path );
-            return super.listResources( path );
-        }
-
-        @Override
-        public WebResource[] getClassLoaderResources( String path )
-        {
-            log.debug( "MyDirContext#getClassLoaderResources: " + path );
-            return super.getClassLoaderResources( path );
-        }
-
-        @Override
-        public WebResource[] getResources( String path )
-        {
-            log.debug( "MyDirContext#getResources: " + path );
-            return super.getResources( path );
-        }
-
-        @Override
-        protected WebResource[] getResourcesInternal( String path, boolean useClassLoaderResources )
-        {
-            log.debug( "MyDirContext#getResourcesInternal: " + path );
-            return super.getResourcesInternal( path, useClassLoaderResources );
-        }
-
-
     }
 
     /**
@@ -995,7 +913,7 @@ public abstract class AbstractRunMojo
     }
 
     /**
-     * FIXME not sure we need all of those files with tomcat8
+     * FIXME not sure we need all of those files with tomcat9
      * Creates the Tomcat configuration directory with the necessary resources.
      *
      * @throws IOException            if the Tomcat configuration could not be created
@@ -1116,7 +1034,9 @@ public abstract class AbstractRunMojo
 
         try
         {
-
+            // Default to headless
+            System.setProperty("java.awt.headless", "true");
+            System.setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");      
             // Set the system properties
             setupSystemProperties();
 
@@ -1578,8 +1498,9 @@ public abstract class AbstractRunMojo
             Wrapper servlet = context.createWrapper();
             servlet.setServletClass( DefaultServlet.class.getName() );
             servlet.setName( "staticContent" );
+            servlet.addMapping("/");
             staticContext.addChild( servlet );
-            staticContext.addServletMapping( "/", "staticContent" );
+            //staticContext.addServletMapping( "/", "staticContent" );
             // see https://issues.apache.org/jira/browse/MTOMCAT-238
             //host.addChild( staticContext );
         }
