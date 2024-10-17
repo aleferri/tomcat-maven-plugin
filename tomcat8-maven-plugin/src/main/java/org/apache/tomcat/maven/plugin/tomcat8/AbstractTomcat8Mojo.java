@@ -34,6 +34,7 @@ public abstract class AbstractTomcat8Mojo
     extends AbstractMojo
 {
     @Parameter( defaultValue = "${settings}", readonly = true )
+    @Component
     protected Settings settings;
 
     @Component

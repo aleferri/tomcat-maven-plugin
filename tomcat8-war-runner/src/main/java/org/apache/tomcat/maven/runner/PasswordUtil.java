@@ -24,13 +24,14 @@ import java.util.Properties;
 
 /**
  * Password obfuscate utility class. Lifted from Jetty org.mortbay.jetty.security.Password
- *
- * <p>Passwords that begin with OBF: are de obfuscated.</p>
- *
- * <p>Passwords can be obfuscated by running Obfuscate as a main class. Obfuscated password are required if a system needs
- * to recover the full password (eg. so that it may be passed to another system).</p>
- *
- * <p>They are not secure, but prevent casual observation.</p>
+ * <p/>
+ * <p/>
+ * Passwords that begin with OBF: are de obfuscated.
+ * <p/>
+ * Passwords can be obfuscated by running Obfuscate as a main class. Obfuscated password are required if a system needs
+ * to recover the full password (eg. so that it may be passed to another system).
+ * <p/>
+ * They are not secure, but prevent casual observation.
  *
  * @see <a
  *      href="http://grepcode.com/file_/repo1.maven.org/maven2/org.mortbay.jetty/jetty/6.1.11/org/mortbay/jetty/security/Password.java/?v=source"
@@ -107,7 +108,7 @@ public class PasswordUtil
             if ( obj instanceof String )
             {
                 String key = (String) obj;
-                String value = props.getProperty( key );
+                String value = (String) props.getProperty( key );
                 if ( value != null && value.startsWith( __OBFUSCATE ) )
                 {
                     System.setProperty( key, deobfuscate( value ) );
